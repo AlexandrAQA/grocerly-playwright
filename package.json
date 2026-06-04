@@ -1,0 +1,24 @@
+{
+  "name": "grocerly-e2e-tests",
+  "version": "1.0.0",
+  "description": "Playwright + TypeScript end-to-end tests for the Grocerly grocery web app",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "e2e",
+    "test-automation",
+    "qa",
+    "page-object-model"
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^22.10.2"
+  }
+}
