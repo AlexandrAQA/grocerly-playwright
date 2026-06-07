@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+
 import { defineConfig, devices } from '@playwright/test';
 
 /**
@@ -5,9 +8,13 @@ import { defineConfig, devices } from '@playwright/test';
  * included in this repository. Start it locally on http://localhost:4200
  * before running the tests (see README). `baseURL` lets specs use relative
  * paths like `page.goto('/')`.
+ *
+ * `globalSetup` wires up @clerk/testing; it no-ops when Clerk credentials are
+ * absent, so the public-page tests still run without any secrets.
  */
 export default defineConfig({
   testDir: './e2e',
+  globalSetup: './e2e/global-setup.ts',
   use: {
     baseURL: 'http://localhost:4200',
     trace: 'on-first-retry',

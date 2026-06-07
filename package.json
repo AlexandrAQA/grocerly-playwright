@@ -18,7 +18,9 @@
     "page-object-model"
   ],
   "devDependencies": {
+    "@clerk/testing": "^2.0.35",
     "@playwright/test": "^1.60.0",
-    "@types/node": "^22.10.2"
+    "@types/node": "^22.10.2",
+    "dotenv": "^17.2.2"
   }
 }
