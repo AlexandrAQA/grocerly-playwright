@@ -1,36 +1,30 @@
-import { test, expect } from '@playwright/test';
-import { clerk, setupClerkTestingToken } from '@clerk/testing/playwright';
+import { test, expect } from "./fixtures";
 
-const hasAuthEnv = Boolean(process.env['CLERK_SECRET_KEY'] && process.env['TEST_USER_EMAIL']);
+/**
+ * The `signedInPage` fixture performs a token-based Clerk sign-in and skips the
+ * test when Clerk credentials are not configured, so these specs add no setup
+ * noise and never fail for a contributor without secrets.
+ */
+test.describe("dashboard, signed in", () => {
+  test(
+    "signed-in user can open the dashboard",
+    { tag: ["@smoke"] },
+    async ({ signedInPage }) => {
+      await signedInPage.goto("/dashboard");
+      await expect(signedInPage).toHaveURL("/dashboard");
+    },
+  );
 
-test.beforeEach(() => {
-  test.skip(!hasAuthEnv, 'Authenticated tests require Clerk credentials (see README).');
-});
+  test(
+    "dashboard shows the signed-in user content",
+    { tag: ["@regression"] },
+    async ({ signedInPage }) => {
+      await signedInPage.goto("/dashboard");
 
-test('signed-in user can access dashboard', async ({ page }) => {
-  await setupClerkTestingToken({ page });
-  await page.goto('/sign-in');
-
-  await clerk.signIn({
-    page,
-    emailAddress: process.env['TEST_USER_EMAIL']!,
-  });
-
-  await page.goto('/dashboard');
-  await expect(page).toHaveURL('/dashboard');
-});
-
-test('dashboard shows the signed-in user content', async ({ page }) => {
-  await setupClerkTestingToken({ page });
-  await page.goto('/sign-in');
-
-  await clerk.signIn({
-    page,
-    emailAddress: process.env['TEST_USER_EMAIL']!,
-  });
-
-  await page.goto('/dashboard');
-
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-  await expect(page.getByText('Convex session active')).toBeVisible();
+      await expect(
+        signedInPage.getByRole("heading", { name: "Dashboard" }),
+      ).toBeVisible();
+      await expect(signedInPage.getByText("Convex session active")).toBeVisible();
+    },
+  );
 });

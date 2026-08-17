@@ -1,20 +1,30 @@
-import { test, expect } from '@playwright/test';
-import { AuthPage } from './pages/auth.page';
+import { test, expect } from "./fixtures";
 
+test.describe("authentication and route guards", () => {
+  test(
+    "a guest visiting the dashboard is redirected to sign-in",
+    { tag: ["@smoke", "@security"] },
+    async ({ page }) => {
+      await page.goto("/dashboard");
+      await expect(page).toHaveURL(/sign-in/);
+    },
+  );
 
-test('click on dashboard item leads to signIn page', async ({ page }) => {
-  await page.goto('/dashboard')
-  await expect(page).toHaveURL(/sign-in/);
-})
+  test(
+    "sign-in page renders the authentication form",
+    { tag: ["@regression"] },
+    async ({ authPage, page }) => {
+      await page.goto("/sign-in");
+      await expect(authPage.authHost).toBeAttached();
+    },
+  );
 
-test('Sign-in page shows the authentication form', async ({ page }) => {
-    const authPage = new AuthPage(page);
-    await page.goto('/sign-in');
-    await expect(authPage.authHost).toBeAttached();
-})
-
-test('Sign-Up page shows the registration form', async ({ page }) => {
-    const authPage = new AuthPage(page);
-    await page.goto('/sign-up');
-    await expect(authPage.authHost).toBeAttached();
-})
+  test(
+    "sign-up page renders the registration form",
+    { tag: ["@regression"] },
+    async ({ authPage, page }) => {
+      await page.goto("/sign-up");
+      await expect(authPage.authHost).toBeAttached();
+    },
+  );
+});
