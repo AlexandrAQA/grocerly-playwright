@@ -1,12 +1,22 @@
 {
   "name": "grocerly-e2e-tests",
-  "version": "1.0.0",
-  "description": "Playwright + TypeScript end-to-end tests for the Grocerly grocery web app",
+  "version": "1.1.0",
+  "description": "Playwright + TypeScript end-to-end suites: the Grocerly grocery web app and a public demo shop that runs in CI",
   "private": true,
   "scripts": {
     "test": "playwright test",
+    "test:demo": "playwright test --project=demo-chromium",
+    "test:demo:all": "playwright test --project=demo-chromium --project=demo-firefox --project=demo-webkit --project=demo-mobile",
+    "test:app": "playwright test --project=app-chromium",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:a11y": "playwright test --grep @a11y",
+    "test:visual": "playwright test --grep @visual --project=demo-chromium",
+    "test:visual:update": "playwright test --grep @visual --project=demo-chromium --update-snapshots",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
+    "test:docker": "docker run --rm -v \"$PWD\":/work -w /work mcr.microsoft.com/playwright:v1.60.0-noble npx playwright test --project=demo-chromium --grep-invert @visual",
+    "typecheck": "tsc --noEmit",
     "report": "playwright show-report"
   },
   "keywords": [
@@ -15,12 +25,18 @@
     "e2e",
     "test-automation",
     "qa",
-    "page-object-model"
+    "page-object-model",
+    "accessibility",
+    "visual-regression",
+    "ci-cd"
   ],
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@clerk/testing": "^2.0.35",
     "@playwright/test": "^1.60.0",
     "@types/node": "^22.10.2",
-    "dotenv": "^17.2.2"
+    "axe-core": "^4.13.0",
+    "dotenv": "^17.2.2",
+    "typescript": "^5.9.3"
   }
 }
