@@ -9,6 +9,8 @@ visual checks, and a cross-browser matrix that runs in CI on every push.
 | Suite | Target | Runs in CI | What it demonstrates |
 | --- | --- | --- | --- |
 | `e2e/demo` | public demo shop (`saucedemo.com`) | yes, on every push and nightly | full checkout journey, negative authentication cases, catalogue sorting, accessibility gate, visual regression |
+| `e2e/api` | public practice API (`api.practicesoftwaretesting.com`) | yes, on every push | REST contract tests, JSON Schema validation with Ajv, token auth, negative and authorization cases |
+| `e2e/mock` | public storefront with the catalogue API intercepted | yes, on every push | network-level mocking: exact product set, empty catalogue, backend failure |
 | `e2e/*.spec.ts` | **Grocerly**, a real grocery e-commerce app (Angular + PrimeNG, Convex backend, Clerk auth, Stripe checkout) | no, the app is private | route guards, token-based Clerk sign-in, theme persistence, signed-out and signed-in navigation |
 
 The Grocerly application itself lives in a separate private repository. To keep
@@ -21,10 +23,13 @@ target, so anyone can clone this repo and get a green run in one command.
 npm ci
 npx playwright install --with-deps
 
-npm run test:demo        # public suite, Chromium
+npm run test:demo        # public UI suite, Chromium
+npm run test:api         # API contract and auth checks
+npm run test:mock        # UI against a mocked catalogue API
 npm run test:demo:all    # Chromium, Firefox, WebKit, Pixel 5 emulation
 npm run test:smoke       # only @smoke
 npm run test:a11y        # only accessibility checks
+npm run check            # lint + type check, the same gate CI runs
 npm run report           # open the last HTML report
 ```
 
@@ -54,6 +59,13 @@ e2e/
   auth.spec.ts              # Grocerly: route guards, sign-in and sign-up forms
   dashboard.spec.ts         # Grocerly: authenticated dashboard
   pages/                    # Grocerly page objects
+  api/
+    fixtures.ts             # API clients: anonymous and worker-scoped authenticated
+    schemas.ts              # Ajv schemas, contract layer kept apart from assertions
+    products.spec.ts        # pagination, sorting, single product, 404 contract
+    auth.spec.ts            # login, wrong password, anonymous access, /users/me
+  mock/
+    products.mock.spec.ts   # route interception: fixed catalogue, empty, 500
   demo/
     fixtures.ts             # demo fixtures, users, storage-state path
     auth.setup.ts           # signs in once, saves the authenticated state
@@ -89,6 +101,15 @@ e2e/
 - **Cross-browser and mobile.** Chromium, Firefox, WebKit and Pixel 5 emulation.
 - **Diagnostics.** Traces, screenshots and video retained on failure; HTML and
   JUnit reports uploaded as CI artifacts; two retries in CI only.
+- **API layer with contracts.** A separate suite drives the REST API through
+  `APIRequestContext`, validates responses against JSON Schema with Ajv and
+  checks authorization separately from authentication.
+- **Network mocking.** `page.route` replaces the catalogue response, which makes
+  the UI deterministic and reproduces states a live backend will not give you on
+  demand: an empty catalogue and a 500 from the backend.
+- **Type-aware linting.** ESLint with `typescript-eslint` and
+  `eslint-plugin-playwright`; `@typescript-eslint/no-floating-promises` catches a
+  missing `await` before it becomes a flaky test.
 - **Strict TypeScript.** `strict`, `noUncheckedIndexedAccess`, no unused locals;
   `npm run typecheck` runs in CI before any browser starts.
 
@@ -137,7 +158,6 @@ docker run --rm -v "$PWD":/work -w /work mcr.microsoft.com/playwright:v1.60.0-no
 
 ## Roadmap
 
-- API-level setup and teardown for test data, plus a small API contract suite.
-- Offline mode with `page.route` stubs so the Grocerly specs can run without the
-  private application.
-- Sharding across CI runners and a merged HTML report.
+- Contract tests generated from the OpenAPI specification.
+- Sharding across CI runners with a merged HTML report.
+- Performance smoke check with k6 in the nightly pipeline.

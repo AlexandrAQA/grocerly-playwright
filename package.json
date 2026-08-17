@@ -4,20 +4,24 @@
   "description": "Playwright + TypeScript end-to-end suites: the Grocerly grocery web app and a public demo shop that runs in CI",
   "private": true,
   "scripts": {
+    "check": "npm run lint && npm run typecheck",
+    "lint": "eslint .",
+    "report": "playwright show-report",
     "test": "playwright test",
+    "test:a11y": "playwright test --grep @a11y",
+    "test:api": "playwright test --project=api",
+    "test:app": "playwright test --project=app-chromium",
     "test:demo": "playwright test --project=demo-chromium",
     "test:demo:all": "playwright test --project=demo-chromium --project=demo-firefox --project=demo-webkit --project=demo-mobile",
-    "test:app": "playwright test --project=app-chromium",
-    "test:smoke": "playwright test --grep @smoke",
+    "test:docker": "docker run --rm -v \"$PWD\":/work -w /work mcr.microsoft.com/playwright:v1.60.0-noble npx playwright test --project=demo-chromium --grep-invert @visual",
+    "test:headed": "playwright test --headed",
+    "test:mock": "playwright test --project=mock",
     "test:regression": "playwright test --grep @regression",
-    "test:a11y": "playwright test --grep @a11y",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:ui": "playwright test --ui",
     "test:visual": "playwright test --grep @visual --project=demo-chromium",
     "test:visual:update": "playwright test --grep @visual --project=demo-chromium --update-snapshots",
-    "test:headed": "playwright test --headed",
-    "test:ui": "playwright test --ui",
-    "test:docker": "docker run --rm -v \"$PWD\":/work -w /work mcr.microsoft.com/playwright:v1.60.0-noble npx playwright test --project=demo-chromium --grep-invert @visual",
-    "typecheck": "tsc --noEmit",
-    "report": "playwright show-report"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "playwright",
@@ -35,8 +39,12 @@
     "@clerk/testing": "^2.0.35",
     "@playwright/test": "^1.60.0",
     "@types/node": "^22.10.2",
+    "ajv": "^8.20.0",
     "axe-core": "^4.13.0",
     "dotenv": "^17.2.2",
-    "typescript": "^5.9.3"
+    "eslint": "^10.8.1",
+    "eslint-plugin-playwright": "^2.11.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.67.0"
   }
 }

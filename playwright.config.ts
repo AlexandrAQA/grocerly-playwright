@@ -83,6 +83,22 @@ export default defineConfig({
       use: { ...devices["Pixel 5"], baseURL: DEMO_BASE_URL },
     },
 
+    /* ---------- mocked UI suite: deterministic catalogue states ---------- */
+    {
+      name: "mock",
+      testDir: "./e2e/mock",
+      testMatch: /.*\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"], baseURL: process.env["SHOP_BASE_URL"] ?? "https://practicesoftwaretesting.com" },
+    },
+
+    /* ---------- API suite: contract and auth checks, no browser UI ---------- */
+    {
+      name: "api",
+      testDir: "./e2e/api",
+      testMatch: /.*\.spec\.ts/,
+      use: { baseURL: process.env["API_BASE_URL"] ?? "https://api.practicesoftwaretesting.com" },
+    },
+
     /* ---------- private app suite: needs the app on localhost ---------- */
     {
       name: "app-chromium",

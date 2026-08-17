@@ -25,7 +25,34 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run lint
       - run: npm run typecheck
+
+  api-suite:
+    name: API and mocked UI
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: API contract tests
+        run: npx playwright test --project=api
+      - name: Mocked UI tests
+        run: npx playwright test --project=mock
+      - name: Upload report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-api
+          path: playwright-report
+          retention-days: 14
 
   demo-suite:
     name: Demo suite (${{ matrix.project }})
