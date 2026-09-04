@@ -112,6 +112,15 @@ e2e/
   missing `await` before it becomes a flaky test.
 - **Strict TypeScript.** `strict`, `noUncheckedIndexedAccess`, no unused locals;
   `npm run typecheck` runs in CI before any browser starts.
+- **A nightly run exists, and is switched off on purpose.** The workflow is
+  written for a scheduled regression run and the cron line is one edit away, but
+  the schedule is currently disabled. The API suite targets a third-party demo
+  service, so on eight consecutive nights against one unchanged commit the run
+  went five green and three red: what it measured was somebody else's uptime,
+  not this repository. A badge that turns red for reasons the author cannot fix
+  teaches people to stop reading the badge. It runs on push, on pull request and
+  on demand via `workflow_dispatch`; the schedule comes back when the external
+  dependency is behind a health check that can report an outage as an outage.
 
 ## Test strategy
 
