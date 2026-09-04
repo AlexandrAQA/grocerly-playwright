@@ -8,7 +8,7 @@ visual checks, and a cross-browser matrix that runs in CI on every push.
 
 | Suite | Target | Runs in CI | What it demonstrates |
 | --- | --- | --- | --- |
-| `e2e/demo` | public demo shop (`saucedemo.com`) | yes, on every push and nightly | full checkout journey, negative authentication cases, catalogue sorting, accessibility gate, visual regression |
+| `e2e/demo` | public demo shop (`saucedemo.com`) | yes, on every push | full checkout journey, negative authentication cases, catalogue sorting, accessibility gate, visual regression |
 | `e2e/api` | public practice API (`api.practicesoftwaretesting.com`) | yes, on every push | REST contract tests, JSON Schema validation with Ajv, token auth, negative and authorization cases |
 | `e2e/mock` | public storefront with the catalogue API intercepted | yes, on every push | network-level mocking: exact product set, empty catalogue, backend failure |
 | `e2e/*.spec.ts` | **Grocerly**, a real grocery e-commerce app (Angular + PrimeNG, Convex backend, Clerk auth, Stripe checkout) | no, the app is private | route guards, token-based Clerk sign-in, theme persistence, signed-out and signed-in navigation |

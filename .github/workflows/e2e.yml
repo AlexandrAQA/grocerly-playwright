@@ -5,9 +5,10 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  schedule:
-    # nightly regression run, 04:30 UTC
-    - cron: "30 4 * * *"
+  # No schedule. The API suite talks to a third-party demo service
+  # (api.practicesoftwaretesting.com), so a nightly run reported that service's
+  # downtime as a failure of this repository: eight consecutive nights on one
+  # unchanged commit went five green and three red. Run it on demand instead.
   workflow_dispatch:
 
 concurrency:
